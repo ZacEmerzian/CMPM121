@@ -6,6 +6,7 @@ io.stdout:setvbuf("no")
 require "entity"
 
 function love.load()
+  love.graphics.setDefaultFilter("nearest", "nearest")
   screenWidth = 640
   screenHeight = 480
   love.window.setMode(screenWidth, screenHeight)
@@ -14,10 +15,13 @@ function love.load()
   entityTable = {}
   
   table.insert(entityTable,
-    EntityClass:new(screenWidth/2, screenHeight/2, 50, 100)
+    EntityClass:new(screenWidth/2, screenHeight/2, 1, 1, 0.5)
   )
   table.insert(entityTable,
-    EntityClass:new(screenWidth/4, screenHeight/4, 30, 30)
+    EntityClass:new(screenWidth/4, screenHeight/4, 1, 1)
+  )
+  table.insert(entityTable,
+    EntityClass:new(0, 0, 1, 1, 2)
   )
 end
 
