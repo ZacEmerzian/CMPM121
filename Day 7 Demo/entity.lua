@@ -19,24 +19,17 @@ DIRECTIONS = {
   RIGHT = 4
 }
 
-function EntityClass:new(xPos, yPos, width, height, scale)
+function EntityClass:new(sc, xPos, yPos, width, height, scale)
   local entity = {}
   local metatable = {__index = EntityClass}
   setmetatable(entity, metatable)
   
-  entity.sprite = love.graphics.newImage("Sprites/LinkDown.png")
-  
-  entity.directionSprites = {
-    [DIRECTIONS.UP] = {
-      {sprite = love.graphics.newImage("Sprites/LinkUp.png"), flipX = false},
-      {sprite = love.graphics.newImage("Sprites/LinkUp.png"), flipX = true}
-    },
-    [DIRECTIONS.DOWN] = {},
-    [DIRECTIONS.LEFT] = {},
-    [DIRECTIONS.RIGHT] = {}
-  }
-  
+  --entity.sprite = love.graphics.newImage("Sprites/LinkDown.png")
+  entity.spriteClass = sc
+    
   entity.facingDirection = DIRECTIONS.DOWN
+  entity.walking = false
+  
   entity.position = Vector(xPos, yPos)
   entity.size = Vector(width, height) * SPRITE_SIZE
   entity.scale = SPRITE_SCALE * (scale == nil and 1 or scale)
@@ -54,9 +47,25 @@ function EntityClass:update()
   end
   
   self.position = self.position + moveDirection
+  
+  -- NEW (change direction and set walking bool)
+  if moveDirection.y ~= 0 then
+    self.facingDirection = moveDirection.y > 0 and DIRECTIONS.DOWN or DIRECTIONS.UP
+  elseif moveDirection.x ~= 0 then
+    self.facingDirection = moveDirection.x > 0 and DIRECTIONS.RIGHT or DIRECTIONS.LEFT
+  end
+  
+  self.walking = moveDirection ~= Vector(0, 0)
 end
 
 function EntityClass:draw()
-  love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
-  love.graphics.draw(self.sprite, self.position.x, self.position.y, 0, self.scale, self.scale)
+  --love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
+  
+  local currentSprite, flipX = self.spriteClass:getSprite(self.facingDirection, self.walking)
+  
+  love.graphics.draw(currentSprite, 
+    self.position.x, self.position.y, 0, 
+    self.scale * flipX, self.scale)
 end
+
+
