@@ -143,3 +143,22 @@ function LikeLikeSprites:new()
 end
 
 GibdoSprites = SpriteClass:new()
+
+KeeseSprites = SpriteClass:new()
+function KeeseSprites:new()
+  self.sprites = {
+    love.graphics.newImage("Sprites/Keese1.png"),
+    love.graphics.newImage("Sprites/Keese2.png")
+  }
+  local onlyAnim = {
+    {sprite = self.sprites[1], flipX = false},
+    {sprite = self.sprites[2], flipX = false}
+  }
+  self.directionSprites = {
+    [DIRECTIONS.UP] = onlyAnim,
+    [DIRECTIONS.DOWN] = onlyAnim,
+    [DIRECTIONS.LEFT] = onlyAnim,
+    [DIRECTIONS.RIGHT] = onlyAnim
+  }
+  return self
+end
