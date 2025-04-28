@@ -19,15 +19,24 @@ DIRECTIONS = {
   RIGHT = 4
 }
 
+directionToVector = {
+  Vector(0, -1),
+  Vector(0, 1),
+  Vector(-1, 0),
+  Vector(1, 0)
+}
+
 function EntityClass:new(dc, sc, xPos, yPos, width, height, scale)
   local entity = {}
   local metatable = {__index = EntityClass}
   setmetatable(entity, metatable)
   
   entity.dataClass = dc
+  entity.behavior = entity.dataClass.behavior:new(entity)
   entity.spriteClass = sc
     
   entity.facingDirection = DIRECTIONS.DOWN
+  entity.animationFrame = 1
   entity.walking = false
   
   entity.position = Vector(xPos, yPos)
@@ -37,30 +46,17 @@ function EntityClass:new(dc, sc, xPos, yPos, width, height, scale)
 end
 
 function EntityClass:update()
-  
-  local moveDirection = Vector(0, 0)
-  
-  for input, direction in pairs(inputVector) do
-    if love.keyboard.isDown(input) then
-      moveDirection = moveDirection + direction
-    end
+  if self.behavior == nil then
+    return
   end
   
-  self.position = self.position + (moveDirection * self.dataClass.moveSpeed)
-  
-  if moveDirection.y ~= 0 then
-    self.facingDirection = moveDirection.y > 0 and DIRECTIONS.DOWN or DIRECTIONS.UP
-  elseif moveDirection.x ~= 0 then
-    self.facingDirection = moveDirection.x > 0 and DIRECTIONS.RIGHT or DIRECTIONS.LEFT
-  end
-  
-  self.walking = moveDirection ~= Vector(0, 0)
+  self.behavior:update()
 end
 
 function EntityClass:draw()
   --love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.x, self.size.y)
   
-  local currentSprite, flipX = self.spriteClass:getSprite(self.facingDirection, self.walking)
+  local currentSprite, flipX = self.spriteClass:getSprite(self.facingDirection, self.walking, self)
   
   love.graphics.draw(currentSprite, 
     self.position.x, self.position.y, 0, 

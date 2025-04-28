@@ -4,8 +4,8 @@ Vector = {}
 metatable = {
   __call = function(self, a, b)
     local vec = {
-      x = a,
-      y = b
+      x = a or 0,
+      y = b or 0
     }
     setmetatable(vec, metatable)
     return vec

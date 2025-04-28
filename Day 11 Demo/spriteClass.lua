@@ -20,20 +20,19 @@ function SpriteClass:new()
     [DIRECTIONS.RIGHT] = onlyAnim
   }
   sprite.animSpeed = 5
-  sprite.animFrame = 1
   
   return sprite
 end
 
-function SpriteClass:getSprite(dir, isAnimating)
+function SpriteClass:getSprite(dir, isAnimating, entity)
   if isAnimating then
     local increasingNumber = love.timer.getTime() * self.animSpeed
     local increasingInt = math.floor(increasingNumber)
     local frame = increasingInt % #self.directionSprites[dir]
-    self.animFrame = frame + 1
+    entity.animationFrame = frame + 1
   end
   
-  local animFrame = self.directionSprites[dir][self.animFrame]
+  local animFrame = self.directionSprites[dir][entity.animationFrame]
   return animFrame["sprite"], animFrame["flipX"] and -1 or 1
 end
 

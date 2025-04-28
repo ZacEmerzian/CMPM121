@@ -1,6 +1,6 @@
 
 EntityDataClass = {}
-function EntityDataClass:new(dn, h, ms, iw)
+function EntityDataClass:new(dn, h, ms, iw, b)
   local entityData = {}
   local metadata = {
     __index = EntityDataClass,
@@ -15,6 +15,7 @@ function EntityDataClass:new(dn, h, ms, iw)
   entityData.moveSpeed = ms
   entityData.ignoreWalls = iw
   entityData.damagable = entityData.health ~= 0
+  entityData.behavior = b
   
   return entityData
 end
