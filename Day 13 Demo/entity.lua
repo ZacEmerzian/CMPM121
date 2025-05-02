@@ -106,3 +106,35 @@ function EntityPrototype:changeAnimation(newAnim)
   
   -- TODO: eventually go back to idle (after some time)
 end
+
+function EntityPrototype:takeDamage(damage)
+  if damage <= 0 then
+    return
+  end
+  
+  self.health = math.max(self.health - damage, 0)
+  self:changeAnimation(ANIMATION_STATES.HIT)
+  self:deathCheck()
+end
+
+function EntityPrototype:deathCheck()
+  if self.health > 0 then
+    return false
+  end
+  
+  local index = 0
+  for i = 1, #enemyTable do
+    if enemyTable[i] == self then
+      index = i
+      break
+    end
+  end
+  
+  if index <= 0 then
+    -- Maybe add a debug statement here since this SHOULD never happen
+    return false
+  end
+  
+  table.remove(enemyTable, index)
+  
+end

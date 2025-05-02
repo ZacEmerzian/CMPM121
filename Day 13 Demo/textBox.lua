@@ -69,7 +69,7 @@ function TextBoxPrototype:update()
       local caster = allyTable[math.random(#allyTable)]
       print(caster.displayName .. " casts " .. tostring(givenSpell.displayName) .. "!")
       caster:changeAnimation(ANIMATION_STATES.SPELL)
-      -- TODO: actually cast the spell
+      givenSpell:cast()
       self.spellSelected = true
     end
   else
@@ -98,7 +98,11 @@ function TextBoxPrototype:draw()
   end
   
   -- Bottom Text Box
-  love.graphics.printf(self.elements[self.cursorIndex + 1].description, 
+  local currentElement = self.elements[self.cursorIndex + 1]
+  local bottomText = currentElement:getElementName()
+    .. " | " .. currentElement.cost
+    .. "\n" .. currentElement.description
+  love.graphics.printf(bottomText, 
     WINDOW_SCALE, love.graphics.getHeight() - 24 * WINDOW_SCALE,
     love.graphics.getWidth()
   )

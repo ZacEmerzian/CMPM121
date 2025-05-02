@@ -8,8 +8,10 @@ WINDOW_SCALE = 4
 
 entityTable = {}
 allyTable = {}
+enemyTable = {}
 
 function love.load()
+  math.randomseed(os.time())
   love.graphics.setDefaultFilter("nearest", "nearest")
   
   love.window.setTitle(GAME_TITLE)
@@ -69,8 +71,9 @@ function love.load()
   for i = 1, 5 do
     local posOffset = Vector(22 * (i - 1), 2 * (i - 1))
     local endPos = startPos + posOffset
-    local mushroom = EntityPrototype:new("Mushroom", endPos.x, endPos.y, mushroomSprites, 30)
+    local mushroom = EntityPrototype:new("Mushroom", endPos.x, endPos.y, mushroomSprites, 300)
     table.insert(entityTable, mushroom)
+    table.insert(enemyTable, mushroom)
   end
   -- Menu Cursor
   cursorSprites = {
@@ -88,37 +91,15 @@ function love.load()
   table.insert(entityTable, cursorEntity)  
   
   require "textBox"
+  require "spell"
   local spellList = {
-    {
-      ["displayName"] = "Spell 1",
-      ["effect"] = 1,
-      ["description"] = "?\nIDK"
-    },
-    {
-      ["displayName"] = "Spell 2",
-      ["effect"] = 2,
-      ["description"] = "??"
-    },
-    {
-      ["displayName"] = "Spell 3",
-      ["effect"] = 3,
-      ["description"] = "???"
-    },
-    {
-      ["displayName"] = "Spell 4",
-      ["effect"] = 4,
-      ["description"] = "????"
-    },
-    {
-      ["displayName"] = "Spell 5",
-      ["effect"] = 5,
-      ["description"] = "?????\nWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-    },
+    CarpetBombPrototype:new(),
+    GrowthPrototype:new(),
+    CarpetBombPrototype:new()
   }
   spellTextBox = TextBoxPrototype:new(13, 2, spellList, cursorEntity)
   
 end
-
 
 function love.update()
   for _, entity in ipairs(entityTable) do
