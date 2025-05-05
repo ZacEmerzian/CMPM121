@@ -1,6 +1,6 @@
 -- Zac Emerzian
 -- RPG Demo - CPMP 121
--- 5-2-2025
+-- 5-2-2025 - 5-5-2025
 io.stdout:setvbuf("no") -- makes print statements immediately
 
 GAME_TITLE = "RPG Demo"
@@ -71,7 +71,7 @@ function love.load()
   for i = 1, 5 do
     local posOffset = Vector(22 * (i - 1), 2 * (i - 1))
     local endPos = startPos + posOffset
-    local mushroom = EntityPrototype:new("Mushroom", endPos.x, endPos.y, mushroomSprites, 300)
+    local mushroom = EntityPrototype:new("Mushroom", endPos.x, endPos.y, mushroomSprites, 600)
     table.insert(entityTable, mushroom)
     table.insert(enemyTable, mushroom)
   end
@@ -95,7 +95,7 @@ function love.load()
   local spellList = {
     CarpetBombPrototype:new(),
     GrowthPrototype:new(),
-    CarpetBombPrototype:new()
+    FrothSpiralPrototype:new()
   }
   spellTextBox = TextBoxPrototype:new(13, 2, spellList, cursorEntity)
   
