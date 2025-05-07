@@ -138,3 +138,11 @@ function EntityPrototype:deathCheck()
   table.remove(enemyTable, index)
   
 end
+
+function EntityPrototype:restoreHealth(healAmount)
+  if healAmount <= 0 then
+    return
+  end
+  
+  self.health = math.min(self.health + healAmount, self.maxHealth)  
+end

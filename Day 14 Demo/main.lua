@@ -95,7 +95,8 @@ function love.load()
   local spellList = {
     CarpetBombPrototype:new(),
     GrowthPrototype:new(),
-    FrothSpiralPrototype:new()
+    FrothSpiralPrototype:new(),
+    CurePrototype:new()
   }
   spellTextBox = TextBoxPrototype:new(13, 2, spellList, cursorEntity)
   

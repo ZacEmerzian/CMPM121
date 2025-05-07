@@ -108,11 +108,17 @@ function SpellPrototype:damageEntity(entity, damage)
 end
 
 function SpellPrototype:getRandomAlly()
-  -- TODO
+  local randIndex = math.random(#allyTable)
+  return allyTable[randIndex]
 end
 
 function SpellPrototype:healEntity(entity, healAmount)
-  -- TODO
+  if entity == nil then
+    print("No targets remaining for " .. tostring(self.displayName) .. "!")
+    return
+  end
+  
+  entity:restoreHealth(healAmount)
 end
 
 -- SPELL DEFINITIONS --
@@ -162,7 +168,7 @@ end
 
 CurePrototype = SpellPrototype:new(
   "Cure",
-  "Restore 70 HP."
+  "Restore 70 HP.",
   70,
   ELEMENTS.EARTH,
   3,
@@ -172,5 +178,6 @@ function CurePrototype:new()
   return CurePrototype
 end
 function CurePrototype:cast()
-  
+  local target = self:getRandomAlly()
+  self:healEntity(target, self.power)
 end
