@@ -1,6 +1,6 @@
 -- Zac Emerzian
 -- Conway's Game of Life - CPMP 121
--- 5-7-2025
+-- 5-7-2025 - 5-9-2025
 io.stdout:setvbuf("no") -- makes print statements immediately
 GAME_TITLE = "Conway's Game of Life"
 
@@ -9,10 +9,18 @@ GRID_WIDTH = 64
 GRID_HEIGHT = 36
 
 cellGrid = {}
+isSimulating = true
+simulationSpeed = 4 -- (1,7)
 
 aliveColor = {1, 0.8, 1, 1}
 deadColor = {0, 0.3, 0, 1}
 
+stepLengths = {
+  1, 0.8, 0.6,
+  0.4,
+  0.2, 0.1, 0.05
+}
+stepTimer = 0
 
 function love.load()
   --math.randomseed(os.time())
@@ -32,8 +40,16 @@ function love.load()
 end
 
 function love.update()
+  if not isSimulating then
+    return
+  end
   
-  simulationStep()
+  if stepTimer < stepLengths[simulationSpeed] then
+    stepTimer= stepTimer + love.timer.getDelta()
+  else
+    simulationStep()
+    stepTimer = 0
+  end
 end
 
 function love.draw()
@@ -43,6 +59,16 @@ function love.draw()
       love.graphics.rectangle("fill", (x - 1) * CELL_SIZE, (y - 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE)
     end
   end
+end
+
+function love.keypressed(key, scancode, isrepeat)
+  -- Perform the Function
+  if controls[key] == nil then
+    print("No action associated to " .. key .. "!")
+    return
+  end
+  
+  controls[key]()
 end
 
 function simulationStep()
@@ -80,16 +106,64 @@ function simulationStep()
   2 X 7
   3 5 8
   ]]--
-  
+  local cellBuffer = {}
   for x, col in ipairs(cellGrid) do
+    local cellColumns = {}
     for y, cell in ipairs(col) do
       local neighborsAlive = getNeighborsAlive(x, y)
+      local shouldBeAlive = true
       if cell then
-        cellGrid[x][y] = (neighborsAlive == 2 or neighborsAlive == 3)
+        shouldBeAlive = (neighborsAlive == 2 or neighborsAlive == 3)
+        --cellGrid[x][y] = (neighborsAlive == 2 or neighborsAlive == 3)
       else
-        cellGrid[x][y] = neighborsAlive == 3
+        shouldBeAlive = neighborsAlive == 3
+        --cellGrid[x][y] = neighborsAlive == 3
       end
+      table.insert(cellColumns, shouldBeAlive)
+    end
+    table.insert(cellBuffer, cellColumns)
+  end
+  cellGrid = cellBuffer
+end
+
+function playOrPause()
+  isSimulating = not isSimulating
+end
+
+function increaseSimulationSpeed()
+  modifySimulationSpeed(1)
+end
+function descreaseSimulationSpeed()
+  modifySimulationSpeed(-1)
+end
+function modifySimulationSpeed(delta)
+  simulationSpeed = math.min(math.max(simulationSpeed + delta, 1), #stepLengths)
+end
+
+function clearBoard()
+  for x, col in ipairs(cellGrid) do
+    for y, cell in ipairs(col) do
+      cellGrid[x][y] = false
     end
   end
 end
 
+controls = {
+  ["space"] = playOrPause,
+  ["return"] = simulationStep,
+  ["a"] = descreaseSimulationSpeed,
+  ["d"] = increaseSimulationSpeed,
+  ["delete"] = clearBoard
+}
+
+function love.mousepressed(x, y, button, istouch)
+  if button ~= 1 then
+    return
+  end
+  
+  toggleCell(math.floor(x / CELL_SIZE) + 1, math.floor(y / CELL_SIZE) + 1)
+end
+
+function toggleCell(x, y)
+  cellGrid[x][y] = not cellGrid[x][y]
+end
