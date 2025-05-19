@@ -155,3 +155,35 @@ function PursueClass:update()
     self:simpleMove(moveDirection)
   end
 end
+
+-- PICKUP CLASS --
+PickupClass = BehaviorClass:new()
+function PickupClass:new(o, to)
+  local pickup = {}
+  local metadata = {__index = PickupClass}
+  setmetatable(pickup, metadata)
+  
+  pickup.owner = o
+  pickup.targetObj = to or pickup.owner.dataClass.behavior.targetObj
+  
+  return pickup
+end
+
+function PickupClass:update()
+  -- Is picked up when the target object is close enough
+  if self.targetObj == nil then
+    return
+  end
+  
+  local threshold = 32
+  local distance = Vector:distance(self.targetObj.position, self.owner.position)
+  if distance < threshold then
+    -- TODO: create notice!
+    
+    for i, entity in ipairs(entityTable) do
+      if entity == self.owner then
+        table.remove(entityTable, i)
+      end
+    end
+  end
+end

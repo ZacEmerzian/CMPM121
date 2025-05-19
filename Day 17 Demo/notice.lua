@@ -15,11 +15,21 @@ function NoticeClass:new(dn, spr, ind)
   
   notice.count = 1
   notice.timer = 4
-  notice.visible = false
+  notice.visible = not false
   
   notice.size = Vector(188, 72)
   
   return notice
+end
+
+function NoticeClass:show(dn, spr, ind)
+  notice.displayName = dn
+  notice.sprite = spr
+  notice.index = ind
+  
+  notice.count = 1
+  notice.timer = 4
+  notice.visible = true
 end
 
 function NoticeClass:update()

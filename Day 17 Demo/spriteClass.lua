@@ -161,3 +161,52 @@ function KeeseSprites:new()
   }
   return self
 end
+
+RedRupeeSprites = SpriteClass:new()
+function RedRupeeSprites:new()
+  self.sprites = {
+    love.graphics.newImage("Sprites/RedRupee.png")
+  }
+  local onlyAnim = {
+    {sprite = self.sprites[1], flipX = false}
+  }
+  self.directionSprites = {
+    [DIRECTIONS.UP] = onlyAnim,
+    [DIRECTIONS.DOWN] = onlyAnim,
+    [DIRECTIONS.LEFT] = onlyAnim,
+    [DIRECTIONS.RIGHT] = onlyAnim
+  }
+  return self
+end
+BlueRupeeSprites = SpriteClass:new()
+function BlueRupeeSprites:new()
+  self.sprites = {
+    love.graphics.newImage("Sprites/BlueRupee.png")
+  }
+  local onlyAnim = {
+    {sprite = self.sprites[1], flipX = false}
+  }
+  self.directionSprites = {
+    [DIRECTIONS.UP] = onlyAnim,
+    [DIRECTIONS.DOWN] = onlyAnim,
+    [DIRECTIONS.LEFT] = onlyAnim,
+    [DIRECTIONS.RIGHT] = onlyAnim
+  }
+  return self
+end
+AcornSprites = SpriteClass:new()
+function AcornSprites:new()
+  self.sprites = {
+    love.graphics.newImage("Sprites/Acorn.png")
+  }
+  local onlyAnim = {
+    {sprite = self.sprites[1], flipX = false}
+  }
+  self.directionSprites = {
+    [DIRECTIONS.UP] = onlyAnim,
+    [DIRECTIONS.DOWN] = onlyAnim,
+    [DIRECTIONS.LEFT] = onlyAnim,
+    [DIRECTIONS.RIGHT] = onlyAnim
+  }
+  return self
+end

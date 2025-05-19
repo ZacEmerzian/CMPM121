@@ -42,3 +42,7 @@ function Vector:normalize(a)
     a.y / Vector:magnitude(a)
   )
 end
+
+function Vector:distance(a, b)
+  return math.sqrt((a.x - b.x)^2 + (a.y - b.y)^2) 
+end
