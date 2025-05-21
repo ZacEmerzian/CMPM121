@@ -3,6 +3,10 @@
 -- 4-7-2025 - 5-19-2025
 io.stdout:setvbuf("no")
 
+EVENT_TYPE = {
+  ITEM_PICKUP = 1
+}
+
 function love.load()
   love.window.setTitle("Zelda Demo")
   love.graphics.setDefaultFilter("nearest", "nearest")
@@ -90,6 +94,8 @@ function love.update()
   for _, entity in ipairs(entityTable) do
     entity:update()
   end
+  
+  noticeManager:update()
   
   for _, notice in ipairs(noticeManager.noticeTable) do
     notice:update()

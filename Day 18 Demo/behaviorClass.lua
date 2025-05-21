@@ -7,6 +7,7 @@ function BehaviorClass:new(o)
   setmetatable(behavior, metadata)
   
   behavior.owner = o
+  behavior.observers = {}
   
   return behavior  
 end
@@ -19,6 +20,45 @@ function BehaviorClass:simpleMove(directionVector)
     self.owner.facingDirection = directionVector.y > 0 and DIRECTIONS.DOWN or DIRECTIONS.UP
   elseif directionVector.x ~= 0 then
     self.owner.facingDirection = directionVector.x > 0 and DIRECTIONS.RIGHT or DIRECTIONS.LEFT
+  end
+end
+
+function BehaviorClass:addObserver(newObserver)
+  -- Redudancy Check
+  local alreadyAdded = false
+  for _, observer in ipairs(self.observers) do
+    if observer == newObserver then
+      alreadyAdded = true
+      break
+    end
+  end
+  if alreadyAdded then
+    return
+  end
+  
+  table.insert(self.observers, newObserver)
+end
+function BehaviorClass:removeObserver(observerToRemove)
+  -- Find Observer Index
+  local observerIndex = 0
+  for i, observer in ipairs(self.observers) do
+    if observer == observerToRemove then
+      observerIndex = i
+      break
+    end
+  end
+  if observerIndex < 1 then
+    return
+  end
+  
+  table.remove(self.observer, observerIndex)
+end
+
+function BehaviorClass:notifyObservers(event, eventData)
+  for i, observer in ipairs(self.observers) do
+    if observer.onNotify ~= nil then
+      observer:onNotify(event, eventData)
+    end
   end
 end
 
@@ -165,6 +205,7 @@ function PickupClass:new(o, to)
   
   pickup.owner = o
   pickup.targetObj = to or pickup.owner.dataClass.behavior.targetObj
+  pickup:addObserver(noticeManager)
   
   return pickup
 end
@@ -178,7 +219,7 @@ function PickupClass:update()
   local threshold = 32
   local distance = Vector:distance(self.targetObj.position, self.owner.position)
   if distance < threshold then
-    -- TODO: create notice!
+    self:notifyObservers(EVENT_TYPE.ITEM_PICKUP, self.owner)
     
     for i, entity in ipairs(entityTable) do
       if entity == self.owner then

@@ -15,7 +15,7 @@ function NoticeClass:new(dn, spr, ind)
   
   notice.count = 1
   notice.timer = 4
-  notice.visible = not false
+  notice.visible = false
   
   notice.size = Vector(188, 72)
   
@@ -23,13 +23,13 @@ function NoticeClass:new(dn, spr, ind)
 end
 
 function NoticeClass:show(dn, spr, ind)
-  notice.displayName = dn
-  notice.sprite = spr
-  notice.index = ind
+  self.displayName = dn
+  self.sprite = spr
+  self.index = ind
   
-  notice.count = 1
-  notice.timer = 4
-  notice.visible = true
+  self.count = 1
+  self.timer = 4
+  self.visible = true
 end
 
 function NoticeClass:update()
@@ -82,4 +82,9 @@ function NoticeClass:draw()
   love.graphics.circle("fill", pos.x + bubbleOffset.x, pos.y + bubbleOffset.y, 16)
   love.graphics.setColor(white)  
   love.graphics.printf(self.count, pos.x + bubbleOffset.x - 4, pos.y + bubbleOffset.y - 12, 128) 
+end
+
+function NoticeClass:addToCount(howMuch)
+  self.count = self.count + howMuch
+  self.timer = 4
 end
