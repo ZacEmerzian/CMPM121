@@ -21,5 +21,5 @@ function EntityDataClass:new(dn, h, ms, iw, b)
 end
 
 function EntityDataClass:newEntity(sc, xp, yp)
-  return EntityClass:new(self, sc, xp, yp, 1, 1, 1)
+  return EntityClass:new(self, sc, xp, yp, 1)
 end

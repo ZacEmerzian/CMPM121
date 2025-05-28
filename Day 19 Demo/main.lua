@@ -1,6 +1,6 @@
 -- Zac Emerzian
 -- CMPM 121 - Zelda Demo
--- 4-7-2025 - 5-19-2025
+-- 4-7-2025 - 5-28-2025
 io.stdout:setvbuf("no")
 
 EVENT_TYPE = {
@@ -20,10 +20,12 @@ function love.load()
   
   require "entity"
   require "entityData"
-  require "spriteClass" -- require will call the functions in the given file, so the Gibdo sprite WAS being loaded in BEFORE we were setting the default filter in load(), by moving the requires into load(), we can setup the project before getting the other scripts involved
+  require "spriteClass"
   require "behaviorClass"
   require "noticeManager"
   noticeManager = NoticeManager:new()
+  require "collisionManager"
+  collisionManager = CollisionManager:new()
   
   linkSpriteClass = LinkSprites:new()
   moblinSpriteClass = MoblinSprites:new()
@@ -57,9 +59,9 @@ function love.load()
 --    likeLikeData,
 --    gibdoData,
 --    keeseData
-      redRupeeData,
-      blueRupeeData,
-      acornData
+    redRupeeData,
+    blueRupeeData,
+    acornData
   }
   
   local spriteClassTable = {
@@ -69,9 +71,9 @@ function love.load()
 --    likeLikeSpriteClass,
 --    gibdoSpriteClass,
 --    keeseSpriteClass
-      redRupeeSpriteClass,
-      blueRupeeSpriteClass,
-      acornSpriteClass
+    redRupeeSpriteClass,
+    blueRupeeSpriteClass,
+    acornSpriteClass
   }
   
   -- Parade of Entities!
@@ -110,4 +112,6 @@ function love.draw()
   for _, notice in ipairs(noticeManager.noticeTable) do
     notice:draw()
   end
+  
+  collisionManager:draw()
 end
