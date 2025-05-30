@@ -1,6 +1,6 @@
 -- Zac Emerzian
 -- CMPM 121 - Zelda Demo
--- 4-7-2025 - 5-28-2025
+-- 4-7-2025 - 5-30-2025
 io.stdout:setvbuf("no")
 
 EVENT_TYPE = {
@@ -13,10 +13,10 @@ function love.load()
   screenWidth = 640
   screenHeight = 480
   love.window.setMode(screenWidth, screenHeight)
-  love.graphics.setBackgroundColor(0.2, 0.7, 0.2, 1)
+  love.graphics.setBackgroundColor(0.6, 0.2, 0.5, 1) -- Purple
   
   font = love.graphics.newFont("TLOZ-Links-Awakening.ttf", 24)
-  love.graphics.setFont(font)
+  --love.graphics.setFont(font)
   
   require "entity"
   require "entityData"
@@ -78,10 +78,10 @@ function love.load()
   
   -- Parade of Entities!
   math.randomseed(os.time()) -- to make sure the numbers are actually random
-  for x = 1, 10 do
-    for y = 1, 10 do
-      local xPos = x * 16 * 4
-      local yPos = y * 16 * 4
+  for x = 1, 9 do
+    for y = 1, 7 do
+      local xPos = (x * SPRITE_SIZE + math.random(2, 14)) * SPRITE_SCALE
+      local yPos = (y * SPRITE_SIZE + math.random(2, 14)) * SPRITE_SCALE
       local randIndex = math.random(#entityDataTable)
       local chosenData = entityDataTable[randIndex]
       local chosenSpriteClass = spriteClassTable[randIndex]      

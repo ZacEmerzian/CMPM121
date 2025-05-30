@@ -21,6 +21,16 @@ function BehaviorClass:simpleMove(directionVector)
   elseif directionVector.x ~= 0 then
     self.owner.facingDirection = directionVector.x > 0 and DIRECTIONS.RIGHT or DIRECTIONS.LEFT
   end
+  
+  -- Check if we've moved to a new collision cell
+  local newGridPos = Vector(
+    math.floor(self.owner.position.x / (collisionManager.CELL_SIZE * SPRITE_SCALE)) + 1,
+    math.floor(self.owner.position.y / (collisionManager.CELL_SIZE * SPRITE_SCALE)) + 1
+  )
+  local newCell = collisionManager.cells[newGridPos.x][newGridPos.y]
+  if newCell ~= self.owner.collisionCell then
+    collisionManager:addToCell(self.owner, newGridPos)
+  end
 end
 
 function BehaviorClass:addObserver(newObserver)
@@ -220,6 +230,7 @@ function PickupClass:update()
   local distance = Vector:distance(self.targetObj.position, self.owner.position)
   if distance < threshold then
     self:notifyObservers(EVENT_TYPE.ITEM_PICKUP, self.owner)
+    self.owner.collisionCell:removeFromContents(self.owner)
     
     for i, entity in ipairs(entityTable) do
       if entity == self.owner then

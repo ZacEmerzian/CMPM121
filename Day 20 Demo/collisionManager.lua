@@ -8,32 +8,29 @@ function CollisionManager:new()
   
   require "collisionCell"
   for x = 1, CollisionManager.CELL_DIMENSIONS.x do
+    local cellColumn = {}
     for y = 1, CollisionManager.CELL_DIMENSIONS.y do
-      local xPos = x * CollisionManager.CELL_SIZE * SPRITE_SCALE
-      local yPos = y * CollisionManager.CELL_SIZE * SPRITE_SCALE
-      table.insert(CollisionManager.cells,
+      local xPos = (x - 1) * CollisionManager.CELL_SIZE * SPRITE_SCALE
+      local yPos = (y - 1) * CollisionManager.CELL_SIZE * SPRITE_SCALE
+      table.insert(cellColumn,
         CollisionCell:new(xPos, yPos, x, y)
       )
     end
+    table.insert(CollisionManager.cells, cellColumn)
   end
   
   return CollisionManager
 end
 
+function CollisionManager:addToCell(object, gridPos)
+  print(tostring(gridPos))
+  self.cells[gridPos.x][gridPos.y]:addToContents(object)
+end
+
 function CollisionManager:draw()
-  local blue = {0.2, 0.4, 0.7, 0.5}
-  local white = {1, 1, 1, 1}
-  
-  for _, cell in ipairs(self.cells) do
-    love.graphics.setColor(blue)
-    love.graphics.rectangle("line",
-      cell.position.x, cell.position.y,
-      self.CELL_SIZE * SPRITE_SCALE, self.CELL_SIZE * SPRITE_SCALE
-    )
-    love.graphics.setColor(white)
---    love.graphics.print(tostring(cell.position),
---      cell.position.x, cell.position.y, 0.3
---    )
-    
+  for x = 1, self.CELL_DIMENSIONS.x do
+    for y = 1, self.CELL_DIMENSIONS.y do
+      self.cells[x][y]:draw()
+    end
   end  
 end

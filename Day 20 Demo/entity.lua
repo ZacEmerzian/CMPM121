@@ -46,6 +46,14 @@ function EntityClass:new(dc, sc, xPos, yPos, scale)
     tempSprite:getPixelHeight()
   )
   entity.scale = SPRITE_SCALE * (scale == nil and 1 or scale)
+  
+  entity.collisionCell = nil
+  local newGridPos = Vector(
+    math.floor(entity.position.x / (collisionManager.CELL_SIZE * SPRITE_SCALE)) + 1,
+    math.floor(entity.position.y / (collisionManager.CELL_SIZE * SPRITE_SCALE)) + 1
+  )
+  collisionManager:addToCell(entity, newGridPos)
+  
   return entity
 end
 
