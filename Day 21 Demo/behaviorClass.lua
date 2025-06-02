@@ -22,14 +22,22 @@ function BehaviorClass:simpleMove(directionVector)
     self.owner.facingDirection = directionVector.x > 0 and DIRECTIONS.RIGHT or DIRECTIONS.LEFT
   end
   
+  worldMoveFlag = true
+  
   -- Check if we've moved to a new collision cell
   local newGridPos = Vector(
     math.floor(self.owner.position.x / (collisionManager.CELL_SIZE * SPRITE_SCALE)) + 1,
     math.floor(self.owner.position.y / (collisionManager.CELL_SIZE * SPRITE_SCALE)) + 1
   )
+  if not collisionManager:isGridPositionInGrid(newGridPos) then
+    return
+  end
+  
   local newCell = collisionManager.cells[newGridPos.x][newGridPos.y]
   if newCell ~= self.owner.collisionCell then
+    print("NEW CELL - " .. tostring(newCell.gridPosition))
     collisionManager:addToCell(self.owner, newGridPos)
+    collisionManager:onMoveCollisionGrid()
   end
 end
 
@@ -216,19 +224,24 @@ function PickupClass:new(o, to)
   pickup.owner = o
   pickup.targetObj = to or pickup.owner.dataClass.behavior.targetObj
   pickup:addObserver(noticeManager)
+  pickup.threshold = 32
+  pickup.inGridRange = false
   
   return pickup
 end
 
-function PickupClass:update()
+function PickupClass:pickupCheck()
   -- Is picked up when the target object is close enough
   if self.targetObj == nil then
     return
   end
+    
+  if not self.inGridRange then
+    return
+  end
   
-  local threshold = 32
   local distance = Vector:distance(self.targetObj.position, self.owner.position)
-  if distance < threshold then
+  if distance < self.threshold then
     self:notifyObservers(EVENT_TYPE.ITEM_PICKUP, self.owner)
     self.owner.collisionCell:removeFromContents(self.owner)
     
@@ -238,4 +251,17 @@ function PickupClass:update()
       end
     end
   end
+end
+
+function PickupClass:updateInRange()
+  self.inGridRange = collisionManager:inRange(self.targetObj, self.owner, self.threshold)
+end
+
+function PickupClass:draw()
+  if not self.inGridRange then
+    return
+  end  
+  
+  love.graphics.line(self.owner.position.x, self.owner.position.y,
+    self.targetObj.position.x, self.targetObj.position.y)  
 end

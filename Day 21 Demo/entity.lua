@@ -77,6 +77,9 @@ function EntityClass:draw()
   )
   
   -- DEBUG SPRITE CENTER
+  if not isDebugMode then
+    return
+  end
   local white = {1, 1, 1, 1}
   local black = {0.4, 0, 0, 1}
   love.graphics.setColor(white)
@@ -84,7 +87,11 @@ function EntityClass:draw()
   love.graphics.setColor(black)
   love.graphics.circle("fill", self.position.x, self.position.y, 6)
   love.graphics.setColor(white)
-  love.graphics.circle("fill", self.position.x, self.position.y, 2)  
+  love.graphics.circle("fill", self.position.x, self.position.y, 2)
+  
+  if self.behavior.draw ~= nil then
+    self.behavior:draw()
+  end
 end
 
 

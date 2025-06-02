@@ -1,11 +1,15 @@
 -- Zac Emerzian
 -- CMPM 121 - Zelda Demo
--- 4-7-2025 - 5-30-2025
+-- 4-7-2025 - 6-2-2025
 io.stdout:setvbuf("no")
+
+isDebugMode = not false
 
 EVENT_TYPE = {
   ITEM_PICKUP = 1
 }
+
+worldMoveFlag = false
 
 function love.load()
   love.window.setTitle("Zelda Demo")
@@ -16,7 +20,7 @@ function love.load()
   love.graphics.setBackgroundColor(0.6, 0.2, 0.5, 1) -- Purple
   
   font = love.graphics.newFont("TLOZ-Links-Awakening.ttf", 24)
-  --love.graphics.setFont(font)
+  love.graphics.setFont(font)
   
   require "entity"
   require "entityData"
@@ -54,11 +58,11 @@ function love.load()
   
   local entityDataTable = {
     --linkData,
---    moblinData,
---    octorokData,
---    likeLikeData,
---    gibdoData,
---    keeseData
+    moblinData,
+    octorokData,
+    likeLikeData,
+    gibdoData,
+    keeseData,
     redRupeeData,
     blueRupeeData,
     acornData
@@ -66,11 +70,11 @@ function love.load()
   
   local spriteClassTable = {
     --linkSpriteClass,
---    moblinSpriteClass,
---    octorokSpriteClass,
---    likeLikeSpriteClass,
---    gibdoSpriteClass,
---    keeseSpriteClass
+    moblinSpriteClass,
+    octorokSpriteClass,
+    likeLikeSpriteClass,
+    gibdoSpriteClass,
+    keeseSpriteClass,
     redRupeeSpriteClass,
     blueRupeeSpriteClass,
     acornSpriteClass
@@ -93,6 +97,7 @@ function love.load()
 end
 
 function love.update()
+  print("UPDATE START")
   for _, entity in ipairs(entityTable) do
     entity:update()
   end
@@ -102,6 +107,10 @@ function love.update()
   for _, notice in ipairs(noticeManager.noticeTable) do
     notice:update()
   end
+  
+  onMove()
+  
+  print("UPDATE END")
 end
 
 function love.draw()
@@ -113,5 +122,18 @@ function love.draw()
     notice:draw()
   end
   
-  collisionManager:draw()
+  if isDebugMode then
+    collisionManager:draw()
+  end
+end
+
+function onMove()
+  -- Update Entity Pickup Checks
+  for _, entity in ipairs(entityTable) do
+    if entity.behavior.pickupCheck ~= nil then
+      entity.behavior:pickupCheck()
+    end
+  end
+  print(" - ON MOVE")
+  worldMoveFlag = false
 end
