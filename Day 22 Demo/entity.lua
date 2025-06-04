@@ -16,12 +16,6 @@ function EntityPrototype:new(pos, sprite)
 end
 
 function EntityPrototype:update()
-  if self.behavior == nil then
-    return
-  end
-  
-  --print(self.dataClass.behavior)
-  self.behavior:update()
 end
 
 function EntityPrototype:draw()

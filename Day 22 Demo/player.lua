@@ -13,8 +13,23 @@ function PlayerPrototype:new(pos, sprite)
   self.isGround = false
   self.isWall = false
   
+  self.GROUND_SPEED = 120
+  self.AIR_SPEED = 140
+  
   self.facingRight = true
   self.directionalInput = Vector()
+  self.jumpPressed = false
+  self.jumpHeld = false
+  
+  require "PlayerStates/playerState"
+  self.states = {
+    idle = IdleState:new(),
+    walking = WalkingState:new(),
+    jumping = JumpingState:new(),
+    falling = FallingState:new()
+  }
+  
+  self.currentState = self.states.idle
     
   return self
 end
@@ -24,7 +39,9 @@ function PlayerPrototype:update()
   self:inputCollection()
   
   -- STATE BASED BEHAVIOR
-  -- TODO
+  if self.currentState.update then
+    self.currentState:update(self)
+  end
 end
 
 function PlayerPrototype:inputCollection()
@@ -41,15 +58,34 @@ function PlayerPrototype:inputCollection()
   end
   
   -- Jumping with Space
-  -- TODO
+  if love.keyboard.isDown("space") then
+    self.jumpPressed = not self.jumpHeld
+    self.jumpHeld = true
+  else
+    self.jumpPressed = false
+    self.jumpHeld = false
+  end  
+end
+
+function PlayerPrototype:setState(newState)
+  if self.currentState == newState then
+    return
+  end
+  
+  self.currentState:onExit()
+  
+  self.currentState = newState
+  
+  self.currentState:onEnter()
+  
+  print(self.currentState.name)
 end
 
 function PlayerPrototype:onTheGround()
   local checkPos = self.position + Vector(0, self.sprite.size/2 + 1)
   
-  for i, entity in ipairs(entityTable) do
+  for _, entity in ipairs(entityTable) do
     if entity.isGround then
-      --print(i)
       local spriteHalf = entity.sprite.size / 2
       if entity.position.x + spriteHalf >= checkPos.x and 
          entity.position.x - spriteHalf <= checkPos.x and 
