@@ -17,4 +17,5 @@ end
 require "PlayerStates/idleState"
 require "PlayerStates/walkingState"
 require "PlayerStates/jumpingState"
+require "PlayerStates/zenithState"
 require "PlayerStates/fallingState"

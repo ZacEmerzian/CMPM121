@@ -26,6 +26,7 @@ function PlayerPrototype:new(pos, sprite)
     idle = IdleState:new(),
     walking = WalkingState:new(),
     jumping = JumpingState:new(),
+    zenith = ZenithState:new(),
     falling = FallingState:new()
   }
   
